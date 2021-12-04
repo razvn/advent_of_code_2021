@@ -30,9 +30,24 @@ internal class Day04Test {
     }
 
     @Test
+    fun `resolve part 1 rec`() {
+        val draw = day.getDraw(input)
+        val boards = day.getBoardsRec(input)
+        assertEquals(4512, day.resolvePart1Rec(draw, boards))
+    }
+
+
+    @Test
     fun `resolve part 2`() {
         val draw = day.getDraw(input)
         val boards = day.getBoards(input)
         assertEquals(1924, day.resolvePart2(draw, boards))
+    }
+
+    @Test
+    fun `resolve part 2 rec`() {
+        val draw = day.getDraw(input)
+        val boards = day.getBoardsRec(input)
+        assertEquals(1924, day.resolvePart2Rec(draw, boards))
     }
 }
