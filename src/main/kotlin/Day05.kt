@@ -40,9 +40,9 @@ class Day05(test: Boolean = false) : Day(5, test) {
         val filterHV = input
             .filter { it.isHorV() }
         val points = filterHV
-            .map { it.points }.flatten().groupBy { it }.mapValues { it.value.count() }
+            .flatMap { it.points }
+            .groupBy { it }.mapValues { it.value.count() }
 
-        filterHV.filter { it.points.contains((Point(4, -1))) }.forEach { println(it) }
         // printPoints(filterHV.maxOf { it.maxX() } + 1, filterHV.maxOf { it.maxY() } + 1, points)
         return points.count { it.value > 1 }
     }
@@ -52,9 +52,9 @@ class Day05(test: Boolean = false) : Day(5, test) {
         else -> {
             val currLine = input.first()
             val restInput = input.drop(1)
-            val communPoints =  restInput.map { it.intersect(currLine) }.flatten().toSet()
+            val communPoints = restInput.flatMap { it.intersect(currLine) }.toSet()
             val newAcc = acc + communPoints
-            recPart1(newAcc.toSet(), restInput)
+            recPart1(newAcc, restInput)
         }
     }
 
@@ -67,7 +67,7 @@ class Day05(test: Boolean = false) : Day(5, test) {
             .filter { it.isHorV() || it.isDiag() }
 
         val points = filterHVDiag
-            .map { it.points }.flatten().groupBy { it }.mapValues { it.value.count() }
+            .flatMap { it.points }.groupBy { it }.mapValues { it.value.count() }
         // printPoints(filterHVDiag.maxOf { it.maxX() } + 1, filterHVDiag.maxOf { it.maxY() } + 1, points)
         return points.count { it.value > 1 }
     }
@@ -91,7 +91,7 @@ class Day05(test: Boolean = false) : Day(5, test) {
                 val str = it.toString().let {
                     it.padStart(maxValueLen - it.length)
                 }
-                if(it < 2) green(str) else red(str)
+                if (it < 2) green(str) else red(str)
             }
         }
         s.forEach { println(it.joinToString(" ")) }
@@ -103,23 +103,23 @@ data class Point(val x: Int, val y: Int) {
         fun fromString(s: String) = s.split(",")
             .map(String::toInt)
             .let { Point(it[0], it[1]) }
-
     }
 }
 
 data class Line(val start: Point, val end: Point) {
     val points by lazy {
-        val hPoints = if (isH()) (minX()..maxX()).map { Point(it, start.y) } else emptyList()
-        val vPoints = if (isV()) (minY()..maxY()).map { Point(start.x, it) } else emptyList()
-
-        val diagPoints = if (isDiag()) {
-            val xDir = if (start.x < end.x) 1 else -1
-            val yDir = if (start.y < end.y) 1 else -1
-            val len = abs(start.x - end.x)
-            (0..len).map { Point(start.x + (xDir * it), start.y + (yDir * it)) }
-        } else emptyList()
-
-        (hPoints + vPoints + diagPoints).toSet()
+        buildSet {
+            if (isH()) (minX()..maxX()).forEach { add(Point(it, start.y)) }
+            if (isV()) (minY()..maxY()).forEach { add(Point(start.x, it)) }
+            if (isDiag()) {
+                val xDir = if (start.x < end.x) 1 else -1
+                val yDir = if (start.y < end.y) 1 else -1
+                val len = abs(start.x - end.x)
+                (0..len).forEach {
+                    add(Point(start.x + (xDir * it), start.y + (yDir * it)))
+                }
+            }
+        }
     }
 
     fun isH() = start.y == end.y
