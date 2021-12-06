@@ -96,41 +96,41 @@ class Day05(test: Boolean = false) : Day(5, test) {
         }
         s.forEach { println(it.joinToString(" ")) }
     }
-}
 
-data class Point(val x: Int, val y: Int) {
-    companion object {
-        fun fromString(s: String) = s.split(",")
-            .map(String::toInt)
-            .let { Point(it[0], it[1]) }
-    }
-}
-
-data class Line(val start: Point, val end: Point) {
-    val points by lazy {
-        buildSet {
-            if (isH()) (minX()..maxX()).forEach { add(Point(it, start.y)) }
-            if (isV()) (minY()..maxY()).forEach { add(Point(start.x, it)) }
-            if (isDiag()) {
-                val xDir = if (start.x < end.x) 1 else -1
-                val yDir = if (start.y < end.y) 1 else -1
-                val len = abs(start.x - end.x)
-                (0..len).forEach {
-                    add(Point(start.x + (xDir * it), start.y + (yDir * it)))
-                }
-            }
+    data class Point(val x: Int, val y: Int) {
+        companion object {
+            fun fromString(s: String) = s.split(",")
+                .map(String::toInt)
+                .let { Point(it[0], it[1]) }
         }
     }
 
-    fun isH() = start.y == end.y
-    fun isV() = start.x == end.x
-    fun isHorV() = isH() || isV()
-    fun isDiag() = abs(start.x - end.x) == abs(start.y - end.y)
+    data class Line(val start: Point, val end: Point) {
+        val points by lazy {
+            buildSet {
+                if (isH()) (minX()..maxX()).forEach { add(Point(it, start.y)) }
+                if (isV()) (minY()..maxY()).forEach { add(Point(start.x, it)) }
+                if (isDiag()) {
+                    val xDir = if (start.x < end.x) 1 else -1
+                    val yDir = if (start.y < end.y) 1 else -1
+                    val len = abs(start.x - end.x)
+                    (0..len).forEach {
+                        add(Point(start.x + (xDir * it), start.y + (yDir * it)))
+                    }
+                }
+            }
+        }
 
-    fun intersect(l: Line) = this.points.filter { l.points.contains(it) }
+        fun isH() = start.y == end.y
+        fun isV() = start.x == end.x
+        fun isHorV() = isH() || isV()
+        fun isDiag() = abs(start.x - end.x) == abs(start.y - end.y)
 
-    fun maxX() = max(start.x, end.x)
-    fun maxY() = max(start.y, end.y)
-    fun minX() = min(start.x, end.x)
-    fun minY() = min(start.y, end.y)
+        fun intersect(l: Line) = this.points.filter { l.points.contains(it) }
+
+        fun maxX() = max(start.x, end.x)
+        fun maxY() = max(start.y, end.y)
+        fun minX() = min(start.x, end.x)
+        fun minY() = min(start.y, end.y)
+    }
 }

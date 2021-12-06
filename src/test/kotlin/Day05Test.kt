@@ -1,5 +1,4 @@
 import org.junit.jupiter.api.Test
-import java.lang.Math.abs
 import kotlin.test.assertEquals
 
 internal class Day05Test {
@@ -24,14 +23,5 @@ internal class Day05Test {
     @Test
     fun `resolve part 2 rec`() {
         assertEquals(12, day.resolvePart2Rec(input))
-    }
-
-    @Test
-    fun rangeTest() {
-        val l = Line(Point(9, 4), Point(3,4))
-        println(l)
-        println( "H: ${l.isH()} V: ${l.isV()} HorV: ${l.isHorV()} Diag: ${l.isDiag()}")
-        l.points.forEach { println(it) }
-        println("maxY: ${l.maxY()} - minY: ${l.minY()}")
     }
 }
